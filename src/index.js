@@ -59,11 +59,18 @@ function returnFnResult(fn) {
    console.log(f()); // выведет 12
    console.log(f()); // выведет 13
  */
-function returnCounter(number = 0) {
 
-    return function f() {
-        return ++number;
-    };
+// ПОЛНАЯ ЗАПИСЬ 
+// function returnCounter(number = 0) {
+
+//     return function f() {
+//         return ++number;
+//     };
+// }
+
+// СОКРАЩЕННАЯ ЗАПИСЬ ЧЕРЕЗ СТРЕЛОЧНУЮ ФУНКЦИЮ
+function returnCounter(number = 0) {
+    return () => ++number;
 }
 
 /*
@@ -75,15 +82,28 @@ function returnCounter(number = 0) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {
-    var array = [];
 
-    for (var i = 0; i < arguments.length; i++) {
-        array.push(arguments[i]);
-    }
+// ПЕРВЫЙ ВАРИАНТ РЕШЕНИЯ
+// function returnArgumentsArray() {
+//     var array = [];
 
-    return array;
+//     for (var i = 0; i < arguments.length; i++) {
+//         array.push(arguments[i]);
+//     }
+
+//     return array;
+// }
+
+// СОКРАЩЕННАЯ ЗАПИСЬ ЧЕРЕЗ ARRAY.FROM
+// function returnArgumentsArray() {
+//     return Array.from(arguments);
+// }
+
+// СОКРАЩЕННАЯ ЗАПИСЬ ЧЕРЕЗ ARRAY.FROM
+function returnArgumentsArray(...args) {
+    return args;
 }
+
 
 /*
  Задание 6 *:
@@ -100,11 +120,28 @@ function returnArgumentsArray() {
 
    console.log(newSum()) выведет 6
  */
-function bindFunction(fn) {
 
-    fn = fn.bind(...arguments);
+// РЕШЕНИЕ ЧЕРЕЗ BIND 
+// function bindFunction(fn) {
+
+//     fn = fn.bind(...arguments);
     
-    return fn;
+//     return fn;
+// }
+
+// РЕШЕНИЕ ЧЕРЕЗ ОПЕРАТОР SPREAD
+// function bindFunction(fn, ...args) {
+
+//     function resultFn() {
+//         return fn(...args);
+//     }
+
+//     return resultFn;
+// }
+
+// ИТОГОВОЕ РЕШЕНИЯ ЧЕРЕЗ СТРЕЛОЧНУЮ ФУНКЦИЮ
+function bindFunction(fn, ...args) {
+    return () => fn(...args);
 }
 
 export {
