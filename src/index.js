@@ -47,7 +47,7 @@ function reduce(array, fn, initial) {
     for ( i ; i < array.length; i++) {
         initial = fn(initial, array[i], i, array);
     }
-    
+
     return initial;
 }
 
@@ -86,6 +86,10 @@ function slice(array, from = '0', to = array.length) {
         to = array.length + to;
     }
 
+    if ( to > array.length) {
+        to = array.length;
+    }
+
     for ( let i = from; i < to; i++) {
         let item = array[i];
 
@@ -99,6 +103,8 @@ function slice(array, from = '0', to = array.length) {
     return newArray;
 }
 
+slice([1, 2, 3, 4, 5, 6, 7])
+
 /*
  Задание 6 *:
 
@@ -106,6 +112,15 @@ function slice(array, from = '0', to = array.length) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    obj = new Proxy (obj, {
+        set(obj, prop, val) {
+            obj[prop] = Math.pow(val, 2);
+
+            return obj;
+        }
+    })
+
+    return obj;
 }
 
 export {
