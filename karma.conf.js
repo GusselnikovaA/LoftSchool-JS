@@ -21,6 +21,14 @@ module.exports = function(config) {
         },
         port: 9876,
         browsers: ['ChromeHeadless'], // или Chrome или Firefox
+        // browserDisconnectTimeout: 10000,
+        // browserDisconnectTolerance: 3,
+        // browserNoActivityTimeout: 60000,
+        // flags: [
+        //     '--disable-web-security',
+        //     '--disable-gpu',
+        //     '--no-sandbox'
+        // ],
         captureTimeout: 20000,
         singleRun: true,
         plugins: [
