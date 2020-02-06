@@ -17,6 +17,22 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
+    if (Array.isArray(array) === false || array.length === 0) {
+        throw new Error('empty array');
+    } else if (typeof fn != "function") {
+        throw new Error('fn is not a function');
+    }
+
+    for (let i = 0; i < array.length; i++) {
+        var result = fn(array[i], i, array);
+
+        if (result == false) {
+            return false;
+        }
+    }
+
+    return true;
+
 }
 
 /*
@@ -36,6 +52,21 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
+    if (Array.isArray(array) === false || array.length === 0) {
+        throw new Error('empty array');
+    } else if (typeof fn != "function") {
+        throw new Error('fn is not a function');
+    }
+    
+    for (let i = 0; i < array.length; i++) {
+        var result = fn(array[i], i, array);
+    
+        if (result == true) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 /*
@@ -50,6 +81,19 @@ function isSomeTrue(array, fn) {
    - fn не является функцией (с текстом "fn is not a function")
  */
 function returnBadArguments(fn) {
+    let array = [];
+
+    if (typeof fn != "function") {
+        throw new Error('fn is not a function');
+    } else if (arguments.length == 0) {
+        return array;
+    }
+
+    for (let i = 0; i < arguments.length; i++) {
+        fn(arguments[i], i, arguments);
+    }
+
+    return fn();
 }
 
 /*
