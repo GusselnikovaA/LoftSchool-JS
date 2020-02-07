@@ -85,15 +85,19 @@ function returnBadArguments(fn) {
 
     if (typeof fn != "function") {
         throw new Error('fn is not a function');
-    } else if (arguments.length == 0) {
+    } else if (arguments.length <= 1) {
         return array;
     }
 
-    for (let i = 0; i < arguments.length; i++) {
-        fn(arguments[i], i, arguments);
+    for (let i = 1; i < arguments.length; i++) {
+        try {
+            fn(arguments[i], i, arguments);
+        } catch (e) {
+            array.push(arguments[i]);
+        }
     }
 
-    return fn();
+    return array;
 }
 
 /*
@@ -113,7 +117,59 @@ function returnBadArguments(fn) {
    - number не является числом (с текстом "number is not a number")
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
-function calculator() {
+function calculator(number = 0) {
+    let obj = {};
+
+    if (typeof number != "number") {
+        throw new Error('number is not a number');
+    } 
+
+    let total = number;
+
+    obj.sum = function() {
+
+        for (let i = 0; i<arguments.length; i++) {
+            total+=arguments[i];
+        }
+
+        return total;
+    };
+
+    obj.dif = function() {
+
+        for (let i = 0; i<arguments.length; i++) {
+            total-=arguments[i];
+        }
+
+        return total;
+
+    };
+
+    obj.div = function() {
+
+        for (let i = 0; i<arguments.length; i++) {
+            if (arguments[i] === 0) {
+                throw new Error('division by 0');
+            }
+            total/=arguments[i];
+        }
+
+        return total;
+
+    };
+
+    obj.mul = function() {
+
+        for (let i = 0; i<arguments.length; i++) {
+            total*=arguments[i];
+        }
+
+        return total;
+
+    };
+
+    return obj;
+
 }
 
 /* При решении задач, пострайтесь использовать отладчик */
