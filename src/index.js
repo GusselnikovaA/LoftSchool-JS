@@ -16,6 +16,7 @@
    isAllTrue([1, 2, 3, 4, 5], n => n < 10) // вернет true
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
+// МОЕ РЕШЕНИЕ
 function isAllTrue(array, fn) {
     if (Array.isArray(array) === false || array.length === 0) {
         throw new Error('empty array');
@@ -32,8 +33,26 @@ function isAllTrue(array, fn) {
     }
 
     return true;
-
 }
+
+// РЕШЕНИЕ С НАСТАВНИКОМ 
+// function isAllTrue(array, fn) {
+//     if (!(fn instanceof Function)) {
+//         throw new Error('fn is not a function');
+//     }
+
+//     if (!(array instanceof Array) || array.length === 0) {
+//         throw new Error('empty array');
+//     }
+
+//     for (let i = 0; i < array.length; i++) {
+//         if (!(fn(array[i]))) {
+//             return false;
+//         }
+//     }
+
+//     return true;
+// }
 
 /*
  Задание 2:
@@ -51,6 +70,7 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 30, 4, 5], n => n > 20) // вернет true
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
+// МОЕ РЕШЕНИЕ
 function isSomeTrue(array, fn) {
     if (Array.isArray(array) === false || array.length === 0) {
         throw new Error('empty array');
@@ -69,6 +89,25 @@ function isSomeTrue(array, fn) {
     return false;
 }
 
+// РЕШЕНИЕ С НАСТАВНИКОМ 
+// function isAllTrue(array, fn) {
+//     if (!(array instanceof Array) || array.length === 0) {
+//         throw new Error('empty array');
+//     }
+
+//     if (!(fn instanceof Function)) {
+//         throw new Error('fn is not a function');
+//     }
+    
+//     for (let i = 0; i < array.length; i++) {
+//         if (fn(array[i])) {
+//             return true;
+//         }
+//     }
+    
+//     return false;
+// }
+
 /*
  Задание 3:
 
@@ -80,6 +119,7 @@ function isSomeTrue(array, fn) {
  3.3: Необходимо выбрасывать исключение в случаях:
    - fn не является функцией (с текстом "fn is not a function")
  */
+// МОЕ РЕШЕНИЕ
 function returnBadArguments(fn) {
     let array = [];
 
@@ -100,6 +140,23 @@ function returnBadArguments(fn) {
     return array;
 }
 
+// РЕШЕНИЕ С НАСТАВНИКОМ 
+// function returnBadArguments(fn, ...args) {
+//     if (!(fn instanceof Function)) {
+//         throw new Error('fn is not a function');
+//     }
+
+//     const result = [];
+
+//     for (const item of args) {
+//         try {
+//             fn(item);
+//         } catch (e) {
+//             result.push(item);
+//         }
+//     }
+// }
+
 /*
  Задание 4:
 
@@ -117,6 +174,7 @@ function returnBadArguments(fn) {
    - number не является числом (с текстом "number is not a number")
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
+// МОЕ РЕШЕНИЕ
 function calculator(number = 0) {
     let obj = {};
 
@@ -151,7 +209,7 @@ function calculator(number = 0) {
             if (arguments[i] === 0) {
                 throw new Error('division by 0');
             }
-            total/=arguments[i];
+            total /= arguments[i];
         }
 
         return total;
@@ -169,8 +227,43 @@ function calculator(number = 0) {
     };
 
     return obj;
-
 }
+
+// РЕШЕНИЕ С НАСТАВНИКОМ 
+// function calculator(number = 0) {
+//     if (typeof number !== "number") {
+//         throw new Error('number is not a number');
+//     } 
+
+//     return {
+//         sum(...args) {
+//             return args.reduce((prevVal, currentVal) => {
+//                 return prevVal + currentVal;
+//             }, number)
+//         }, 
+
+//         dif(...args) {
+//             return args.reduce((prevVal, currentVal) => {
+//                 return prevVal - currentVal;
+//             }, number)
+//         }, 
+
+//         div(...args) {
+//             return args.reduce((prevVal, currentVal) => {
+//                 if (currentVal === 0) {
+//                     throw new Error('division by 0');
+//                 }
+//                 return prevVal / currentVal;
+//             }, number)
+//         },
+
+//         mul(...args) {
+//             return args.reduce((prevVal, currentVal) => {
+//                 return prevVal * currentVal;
+//             }, number)
+//         }, 
+//     } 
+// }
 
 /* При решении задач, пострайтесь использовать отладчик */
 
