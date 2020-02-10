@@ -127,45 +127,38 @@ function calculator(number = 0) {
     let total = number;
 
     obj.sum = function() {
-
         for (let i = 0; i<arguments.length; i++) {
-            total+=arguments[i];
+            total += arguments[i];
         }
-
+        
         return total;
     };
 
     obj.dif = function() {
-
         for (let i = 0; i<arguments.length; i++) {
-            total-=arguments[i];
+            total -= arguments[i];
         }
 
         return total;
-
     };
 
     obj.div = function() {
-
         for (let i = 0; i<arguments.length; i++) {
             if (arguments[i] === 0) {
                 throw new Error('division by 0');
             }
-            total/=arguments[i];
+            total /= arguments[i];
         }
 
         return total;
-
     };
 
     obj.mul = function() {
-
         for (let i = 0; i<arguments.length; i++) {
-            total*=arguments[i];
+            total *= arguments[i];
         }
 
         return total;
-
     };
 
     return obj;
