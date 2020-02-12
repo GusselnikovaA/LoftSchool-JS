@@ -123,12 +123,23 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
-    let cursor = where;
-    
-    while (cursor = cursor.childNodes) {
-        if (cursor.nodeType === 3) {
-            console.log(cursor);
-            where.removeChild(cursor);
+
+    for (let node of where.childNodes) {
+        if (node.nodeType === 1) {
+            let child = node.firstChild;
+
+            while (child) {
+                if (child.nodeType === 1) {
+                    deleteTextNodesRecursive(child);
+                    child = child.nextSibling;
+                } else if (child.nodeType === 3) {
+                    node.removeChild(child);
+                    child = node.firstChild;
+                }
+            }
+
+        } else if (node.nodeType === 3) {
+            where.removeChild(node);
         }
     }
 }
@@ -139,7 +150,7 @@ function deleteTextNodesRecursive(where) {
  Необходимо собрать статистику по всем узлам внутри элемента переданного в параметре root и вернуть ее в виде объекта
  Статистика должна содержать:
  - количество текстовых узлов
- - количество элементов каждого класса
+ - количество элaласса
  - количество элементов каждого тега
  Для работы с классами рекомендуется использовать classList
  Постарайтесь не создавать глобальных переменных
@@ -153,8 +164,20 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-// function collectDOMStat(root) {
-// }
+function collectDOMStat(root) {
+    let statistics = {};
+
+    for (let node of root.childNodes) {
+        if (node.nodeType ==== 3) {
+            statistics.texts = 1; // значение свойства texts должно увеличиваться на 1
+        } else if (node.nodeType === 1) {
+
+        }
+    }
+
+    return statistics;
+
+}
 
 /*
  Задание 8 *:
@@ -198,6 +221,6 @@ export {
     findError,
     deleteTextNodes,
     deleteTextNodesRecursive,
-    // collectDOMStat,
+    collectDOMStat,
     // observeChildNodes
 };
