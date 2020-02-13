@@ -240,8 +240,16 @@ function collectDOMStat(root) {
      nodes: [div]
    }
  */
-// function observeChildNodes(where, fn) {
-// }
+function observeChildNodes(where, fn) {
+    // создаём наблюдатель за изменениями
+    let observer = new MutationObserver(fn);
+
+    // прикрепляем его к DOM-узлу where
+    observer.observe(where, { 
+        childList: true, 
+        subtree: true 
+    });
+}
 
 export {
     createDivWithText,
@@ -251,5 +259,5 @@ export {
     deleteTextNodes,
     deleteTextNodesRecursive,
     collectDOMStat,
-    // observeChildNodes
+    observeChildNodes
 };
