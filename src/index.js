@@ -150,7 +150,7 @@ function deleteTextNodesRecursive(where) {
  Необходимо собрать статистику по всем узлам внутри элемента переданного в параметре root и вернуть ее в виде объекта
  Статистика должна содержать:
  - количество текстовых узлов
- - количество элaласса
+ - количество элементов каждого класса
  - количество элементов каждого тега
  Для работы с классами рекомендуется использовать classList
  Постарайтесь не создавать глобальных переменных
@@ -165,18 +165,47 @@ function deleteTextNodesRecursive(where) {
    }
  */
 function collectDOMStat(root) {
-    let statistics = {};
+    let statistics = {
+        tags: {},
+        classes: {},
+        texts: 0
+    }; // создаем объект co свойствами
 
-    for (let node of root.childNodes) {
-        if (node.nodeType ==== 3) {
-            statistics.texts = 1; // значение свойства texts должно увеличиваться на 1
-        } else if (node.nodeType === 1) {
+    for (let node of root.childNodes) { // цикл для всех узлов DOM root
+        if (node.nodeType === 1) {     
+            let child = node.firstChild; 
 
+            while (child) {
+                if (child.nodeType === 1) { // если тип узла элемент
+                    collectDOMStat(child);   
+                    let tagName = child.tagName;
+
+                    if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
+                        statistics.tags[tagName] = 1; // если нет, создает такое свойство со значением 1
+                    } else {
+                        statistics.tags[tagName] += 1; // если есть, увеличивает значение этого свойства на 1
+                    }
+
+                    if (child.hasAttribute('class')) { // проверяем есть ли у узла элемента атрибут class
+                        let className = child.getAttribute('class'); // присваиваем переменной className значение атрибута class
+
+                        if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
+                            statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
+                        } else {
+                            statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
+                        }
+                    }
+                } else if (child.nodeType === 3) { // если тип узла текстовый
+                    statistics.texts += 1; // значение свойства texts должно увеличиваться на 1
+                }
+                child = child.nextSibling;
+            }
+        } else if (node.nodeType === 3) {
+            statistics.texts += 1;
         }
     }
 
     return statistics;
-
 }
 
 /*
