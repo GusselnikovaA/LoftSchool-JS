@@ -175,11 +175,10 @@ function collectDOMStat(root, statistics) {
 
     for (let node of root.childNodes) { // цикл для всех узлов DOM root
         if (node.nodeType === 1) {     
-            let child = node; 
 
-            while (child) {
-                if (child.nodeType === 1) { // если тип узла элемент   
-                    let tagName = child.tagName;
+            while (node) {
+                if (node.nodeType === 1) { // если тип узла элемент   
+                    let tagName = node.tagName;
 
                     if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
                         statistics.tags[tagName] = 1; // если нет, создает такое свойство со значением 1
@@ -187,22 +186,37 @@ function collectDOMStat(root, statistics) {
                         statistics.tags[tagName] += 1; // если есть, увеличивает значение этого свойства на 1
                     }
 
-                    if (child.hasAttribute('class')) { // проверяем есть ли у узла элемента атрибут class
-                        let className = child.getAttribute('class'); // присваиваем переменной className значение атрибута class
+                    if (node.hasAttribute('class')) { // проверяем есть ли у узла элемента атрибут class
+                        let className = node.getAttribute('class'); // присваиваем переменной className значение атрибута class
+                        
+                        if (className.includes(' ')) {
+                            let classArray = className.split(' ');
 
-                        if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
+                            for (let i = 0; i < classArray.length; i++) {
+                                className = classArray[i];
+                                if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
+                                    statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
+                                } else {
+                                    statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
+                                }
+                            }
+                        } else if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
                             statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
                         } else {
                             statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
                         }
                     }
-                    if (child.childNodes !== null) {
-                        collectDOMStat(child, statistics);
+                    if (node.childNodes !== null) {
+                        collectDOMStat(node, statistics);
                     }
-                } else if (child.nodeType === 3) { // если тип узла текстовый
+                } else if (node.nodeType === 3) { // если тип узла текстовый
                     statistics.texts += 1; // значение свойства texts должно увеличиваться на 1
                 }
-                child = child.nextSibling;
+                if (node !== root.lastChild) {
+                    node = node.nextSibling;
+                } else {
+                    return statistics;
+                }
             }
         } else if (node.nodeType === 3) {
             statistics.texts += 1;
@@ -245,14 +259,29 @@ function collectDOMStat(root, statistics) {
    }
  */
 function observeChildNodes(where, fn) {
+    // создаем объект со свойствами type и nodes
+    const obj = {
+        type: '',
+        nodes: []
+    }
+
     // создаём наблюдатель за изменениями
-    let observer = new MutationObserver(fn);
+    var observer = new MutationObserver(function(mutationList) {
+        mutationList.forEach(function(mutation) {
+            if (mutation.type !== undefined) {
+                obj.type = 'insert';
+                obj.nodes.push(mutation.target);
+                console.log(fn(obj));
+            }
+        });    
+    });
 
     // прикрепляем его к DOM-узлу where
     observer.observe(where, { 
-        childList: true, 
+        childList: true,
         subtree: true 
     });
+ 
 }
 
 export {
