@@ -164,20 +164,21 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root) {
-    let statistics = {
-        tags: {},
-        classes: {},
-        texts: 0
-    }; // создаем объект co свойствами
+function collectDOMStat(root, statistics) {
+    if ( typeof statistics === 'undefined' ) {
+        var statistics = {
+            tags: {},
+            classes: {},
+            texts: 0
+        }; // создаем объект co свойствами
+    } 
 
     for (let node of root.childNodes) { // цикл для всех узлов DOM root
         if (node.nodeType === 1) {     
-            let child = node.firstChild; 
+            let child = node; 
 
             while (child) {
-                if (child.nodeType === 1) { // если тип узла элемент
-                    collectDOMStat(child);   
+                if (child.nodeType === 1) { // если тип узла элемент   
                     let tagName = child.tagName;
 
                     if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
@@ -194,6 +195,9 @@ function collectDOMStat(root) {
                         } else {
                             statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
                         }
+                    }
+                    if (child.childNodes !== null) {
+                        collectDOMStat(child, statistics);
                     }
                 } else if (child.nodeType === 3) { // если тип узла текстовый
                     statistics.texts += 1; // значение свойства texts должно увеличиваться на 1

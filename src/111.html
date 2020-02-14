@@ -14,20 +14,21 @@
             where.innerHTML = `<p class="${class1}"><b>${text1}</b> <b class="${class1} ${class2}">${text2}</b></p>`;
             result = collectDOMStat(where);
 
-            function collectDOMStat(root) {
-    let statistics = {
-        tags: {},
-        classes: {},
-        texts: 0
-    }; // создаем пустой объект
+function collectDOMStat(root, statistics) {
+    if ( typeof statistics === 'undefined' ) {
+        var statistics = {
+            tags: {},
+            classes: {},
+            texts: 0
+        }; // создаем объект co свойствами
+    } 
 
     for (let node of root.childNodes) { // цикл для всех узлов DOM root
-        if (node.nodeType === 1) {
-            let child = node.firstChild; 
+        if (node.nodeType === 1) {     
+            let child = node; 
 
             while (child) {
-                if (child.nodeType === 1) { // если тип узла элемент
-                    collectDOMStat(child);
+                if (child.nodeType === 1) { // если тип узла элемент   
                     let tagName = child.tagName;
 
                     if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
@@ -45,6 +46,9 @@
                             statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
                         }
                     }
+                    if (child.childNodes !== null) {
+                        collectDOMStat(child, statistics);
+                    }
                 } else if (child.nodeType === 3) { // если тип узла текстовый
                     statistics.texts += 1; // значение свойства texts должно увеличиваться на 1
                 }
@@ -54,7 +58,7 @@
             statistics.texts += 1;
         }
     }
-    console.log(statistics);
     return statistics;
 }
+
 </script>
