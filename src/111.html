@@ -110,14 +110,8 @@ function observeChildNodes(where, fn) {
         nodes: []
     }
     // создаём наблюдатель за изменениями
-    var observer = new MutationObserver(function(mutationList) {
-        mutationList.forEach(function(mutation) {
-            if (mutation.type !== undefined) {
-                obj.type = 'insert';
-                obj.nodes.push(mutation.target);
-                console.log(fn(obj));
-            }
-        });    
+    var observer = new MutationObserver(fn => {
+        console.log(fn);
     });
 
     // прикрепляем его к DOM-узлу where

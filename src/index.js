@@ -11,9 +11,12 @@
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
 function createDivWithText(text) {
+    // создаем элемент div
     const div = document.createElement('div');
 
     div.textContent = text;
+    // альтернативный вариант записи добавление текста в элемент
+    // div.innerContent = text;
 
     return div;
 }
@@ -51,6 +54,7 @@ function prepend(what, where) {
  */
 function findAllPSiblings(where) {
     let result = [];
+    // ищет все теги p в DOM where
     let p = where.querySelectorAll('p');
 
     for (let child of where.children) {
@@ -60,6 +64,10 @@ function findAllPSiblings(where) {
             }
         }
     }
+    // не прогоняет через весь документ, а проводит столько итераций сколько нашел тегов p 
+    // for (const item of p) {
+    //     result.push(item.previousElementSibling);
+    // }
 
     return result;
 }
@@ -109,6 +117,8 @@ function deleteTextNodes(where) {
             where.removeChild(child);
         }
     }
+
+    // 
 }
 
 /*
@@ -124,23 +134,34 @@ function deleteTextNodes(where) {
  */
 function deleteTextNodesRecursive(where) {
 
-    for (let node of where.childNodes) {
-        if (node.nodeType === 1) {
-            let child = node.firstChild;
+    // for (let node of where.childNodes) {
+    //     if (node.nodeType === 1) {
+    //         let child = node.firstChild;
 
-            while (child) {
-                if (child.nodeType === 1) {
-                    deleteTextNodesRecursive(child);
-                    child = child.nextSibling;
-                } else if (child.nodeType === 3) {
-                    node.removeChild(child);
-                    child = node.firstChild;
-                }
-            }
+    //         while (child) {
+    //             if (child.nodeType === 1) {
+    //                 deleteTextNodesRecursive(child);
+    //                 child = child.nextSibling;
+    //             } else if (child.nodeType === 3) {
+    //                 node.removeChild(child);
+    //                 child = node.firstChild;
+    //             }
+    //         }
 
-        } else if (node.nodeType === 3) {
-            where.removeChild(node);
+    //     } else if (node.nodeType === 3) {
+    //         where.removeChild(node);
+    //     }
+    // }
+    const nodes = [...where.childNodes];
+
+    for (const child of nodes) {
+        if (child.nodeType === 3) {
+            where.removeChild(child);
         }
+
+        if (child.childNodes.length > 0) {
+            deleteTextNodesRecursive(child);
+        } else {}
     }
 }
 
@@ -165,6 +186,8 @@ function deleteTextNodesRecursive(where) {
    }
  */
 function collectDOMStat(root, statistics) {
+    // альтернативный сспособ проверки существует ли объект
+    // if ( statistics === undefined )
     if ( typeof statistics === 'undefined' ) {
         var statistics = {
             tags: {},
@@ -173,57 +196,131 @@ function collectDOMStat(root, statistics) {
         }; // создаем объект co свойствами
     } 
 
-    for (let node of root.childNodes) { // цикл для всех узлов DOM root
-        if (node.nodeType === 1) {     
-
+    // цикл для всех узлов DOM root
+    for (let node of root.childNodes) {
+        // если узел типа элемент
+        if (node.nodeType === 1) {    
+            // пока узлы не кончатся
             while (node) {
-                if (node.nodeType === 1) { // если тип узла элемент   
+                // если тип узла элемент 
+                if (node.nodeType === 1) {  
+                    // создаем переменную с названием тега текущего элемента
                     let tagName = node.tagName;
 
-                    if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
-                        statistics.tags[tagName] = 1; // если нет, создает такое свойство со значением 1
+                    // проверяет есть ли свойство у объекта с тегом этого элемента
+                    if (statistics.tags.hasOwnProperty(tagName) == false) {
+                        // если нет, создает такое свойство со значением 1
+                        statistics.tags[tagName] = 1; 
                     } else {
-                        statistics.tags[tagName] += 1; // если есть, увеличивает значение этого свойства на 1
+                        // если есть, увеличивает значение этого свойства на 1
+                        statistics.tags[tagName] += 1;
                     }
 
-                    if (node.hasAttribute('class')) { // проверяем есть ли у узла элемента атрибут class
-                        let className = node.getAttribute('class'); // присваиваем переменной className значение атрибута class
-                        
-                        if (className.includes(' ')) {
-                            let classArray = className.split(' ');
-
-                            for (let i = 0; i < classArray.length; i++) {
-                                className = classArray[i];
-                                if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
-                                    statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
-                                } else {
-                                    statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
-                                }
-                            }
-                        } else if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
-                            statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
+                    for (const className of node.classList) {
+                        if (statistics.classes.hasOwnProperty([className])) { // 
+                            statistics.classes[className]++;
                         } else {
-                            statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
+                            statistics.classes[className] = 1;
                         }
                     }
+
+                    // ОЧЕНЬ ПОДРОБНАЯ ПРОВЕРКА КЛАССОВ ЭЛЕМЕНТА
+                    // // проверяем есть ли у текущего элемента атрибут class
+                    // if (node.hasAttribute('class')) {
+                    //     // присваиваем переменной className значение атрибута class
+                    //     let className = node.getAttribute('class');
+                        
+                    //     // если переменная класс имеет внутри пробел
+                    //     if (className.includes(' ')) {
+                    //         // то создаем переменную classArray с частями className, поделенными по пробелу
+                    //         let classArray = className.split(' ');
+
+                    //         // для каждой части className 
+                    //         for (let i = 0; i < classArray.length; i++) {
+                    //             className = classArray[i];
+                    //             // проверяет есть ли свойство у объекта с именем этого класса 
+
+                    //             if (statistics.classes.hasOwnProperty(className) == false) {
+                    //                 // если нет, создает такое свойство со значением 1
+                    //                 statistics.classes[className] = 1; 
+                    //             } else {
+                    //                 // если есть, увеличивает значение этого свойства на 1
+                    //                 statistics.classes[className] += 1;
+                    //             }
+                    //         }
+                    //     // если переменная className не имеет внутри пробела, то проверяем есть ли свойство у объекта с именем этого класса 
+                    //     } else if (statistics.classes.hasOwnProperty(className) == false) {
+                    //         // если нет, создает такое свойство со значением 1
+                    //         statistics.classes[className] = 1; 
+                    //     } else {
+                    //         // если есть, увеличивает значение этого свойства на 1
+                    //         statistics.classes[className] += 1; 
+                    //     }
+                    // }
+                    
+                    // проверяем свойство childNodes у текущего элемента
                     if (node.childNodes !== null) {
+                        // если это свойство не равно null? то снова запускаем функцию
                         collectDOMStat(node, statistics);
                     }
-                } else if (node.nodeType === 3) { // если тип узла текстовый
-                    statistics.texts += 1; // значение свойства texts должно увеличиваться на 1
+                // если тип узла текстовый
+                } else if (node.nodeType === 3) {
+                    // значение свойства texts должно увеличиваться на 1
+                    statistics.texts += 1;
                 }
+                // если текущий элемент  не является последним элементом у родителя
                 if (node !== root.lastChild) {
+                    // то присваиваем node следующий соседний элемент
                     node = node.nextSibling;
+                // если текущий элемент последний, то возвращаем статистику
                 } else {
                     return statistics;
                 }
             }
+        // если текущий элемент текстовый
         } else if (node.nodeType === 3) {
+            // значение свойства texts должно увеличиваться на 1
             statistics.texts += 1;
         }
     }
 
     return statistics;
+
+    // if (statistics == undefined) {
+    //     statistics = {
+    //         tags: {},
+    //         classes: {},
+    //         texts: 0
+    //     };
+    // }
+
+    // for (let node of root.childNodes) { 
+    //     if (node.nodeType === 3) {
+    //         statistics.texts ++;
+    //     }
+        
+    //     if (node.nodeType === 1) {             
+    //         if (statistics.tags.hasOwnProperty(node.tagName)) {
+    //             statistics.tags[node.tagName]++;
+    //         } else {
+    //             statistics.tags[node.tagName] = 1;
+    //         }
+    //     }
+
+    //     for (const className of node.classList) {
+    //         if (statistics.classes.hasOwnProperty([className])) { // 
+    //             statistics.classes[className]++;
+    //         } else {
+    //             statistics.classes[className] = 1;
+    //         }
+    //     }
+
+    //     if (node.childNodes !== null) {
+    //         collectDOMStat(node, statistics);
+    //     }
+    // }
+
+    // return statistics;
 }
 
 /*
@@ -266,13 +363,24 @@ function observeChildNodes(where, fn) {
     }
 
     // создаём наблюдатель за изменениями
-    var observer = new MutationObserver(function(mutationList) {
-        mutationList.forEach(function(mutation) {
-            if (mutation.type !== undefined) {
+    // MutationObserver's callback возвращает объект 
+    var observer = new MutationObserver(function(MutationRecord) {
+        // MutationRecord - массив??? изменений, которые отследил наблюдатель и для каждого такого изменения запускаем функцию
+        // mutation это объект каждого изменения, которое отловил наблюдатель
+        MutationRecord.forEach(function(mutation) {
+            // если длина свойства addNodes текущего изменения больше 0. N.t. был добавлен какой-то элемент
+            if (mutation.addedNodes.length > 0) {
                 obj.type = 'insert';
-                obj.nodes.push(mutation.target);
-                console.log(fn(obj));
+                obj.nodes = mutation.addedNodes;
             }
+
+            // если длина свойства removeNodes текущего изменения больше 0. N.t. был удален какой-то элемент
+            if (mutation.removeNodes.length > 0) {
+                obj.type = 'remove';
+                obj.nodes = mutation.removeNodes;
+            }
+
+            fn(obj);
         });    
     });
 
