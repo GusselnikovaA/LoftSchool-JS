@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON</title>
+</head>
+<body>
+    <button id='loadButton'>Загрузить</button>
+
+    <div id="result"></div>
+
+    <script>
+        const loadButton = document.querySelector('#loadButton');
+        const result = document.querySelector('#result');
+
+        loadButton.addEventListener('click', () => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('GET', 'content.txt');
+            xhr.send();
+            xhr.addEventListener('load', () => {
+                if (xhr.status >= 400) {
+                    console.error("Ошибка "+xhr.status)
+                } else {
+                    result.innerText = xhr.responseText;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
