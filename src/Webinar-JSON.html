@@ -14,20 +14,56 @@
         const loadButton = document.querySelector('#loadButton');
         const result = document.querySelector('#result');
 
+        // вариант с преобразованием текста в массив с объектами через JSON.parse строка 27
+        // loadButton.addEventListener('click', () => {
+        //     const xhr = new XMLHttpRequest();
+
+        //     xhr.open('GET', 'friends.json');
+        //     xhr.send();
+        //     xhr.addEventListener('load', () => {
+        //         if (xhr.status >= 400) {
+        //             console.error("Ошибка "+xhr.status)
+        //         } else {
+        //             const friends = JSON.parse(xhr.responseText);
+                    
+        //             for (const friend of friends) {
+        //                 result.appendChild(createFriendDOM(friend));
+        //             }
+        //         }
+        //     });
+        // });
+
+        // XMLHttpRequest умеет сразц работать с JSON файлами. Для этого необходимо указать тип файлов, что в строке 40
         loadButton.addEventListener('click', () => {
             const xhr = new XMLHttpRequest();
-
             xhr.open('GET', 'friends.json');
+            // здесь указываем через метод responseType что будем работать с файлами типа JSON 
+            xhr.responseType = 'json'
             xhr.send();
             xhr.addEventListener('load', () => {
                 if (xhr.status >= 400) {
                     console.error("Ошибка "+xhr.status)
                 } else {
-                    const friends = JSON.parse(xhr.responseText);
-                    console.log(friends);
+                    // здесь уже не парсим JSON и обращаемся именно к свойству response,  а не responseText
+                    const friends = xhr.response;
+                    // очищаем наш div, чтобы дублирующие записи не добавлялись в div
+                    result.innerHTML = '';
+                    for (const friend of friends) {
+                        // вызываем функцию createFriendNode для каждого объекта friend из массива friends (массив мы получили из xhr.response)
+                        result.appendChild(createFriendNode(friend));
+                    }
                 }
             });
         });
+
+        function createFriendNode(friend) {
+            const div = document.createElement ('div');
+
+            div.classList.add('friend');
+            div.textContent = `${friend.name} ${friend.lastName}`;
+
+            return div;
+        }
     </script>
 </body>
 </html>

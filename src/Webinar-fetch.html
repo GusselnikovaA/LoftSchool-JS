@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON</title>
+</head>
+<body>
+    <button id='loadButton'>Загрузить</button>
+
+    <div id="result"></div>
+
+    <script>
+        const loadButton = document.querySelector('#loadButton');
+        const result = document.querySelector('#result');
+
+        loadButton.addEventListener('click', () => {
+            // Использование функции fetch, которая встроена в браузер
+            // вызываем fetch
+            fetch('friends.json')
+              // ждем пока придет ответ от сервера, пока promise разрешится
+              // обращаемся к ответу от сервера. // метод .json возвращает новый promise
+              .then(response => {
+                if(response.status >= 400) {
+                  return Promise.reject();
+                }
+                // метод .json возвращает новый promise 
+                return response.json();
+              })
+              // когда этот promise разрешится запускается отработчик, в котором проводим омновные операции
+              .then(friends => {
+                for (const friend of friends) {
+                  // вызываем функцию createFriendNode для каждого объекта friend из массива friends (массив мы получили из xhr.response)
+                    result.appendChild(createFriendNode(friend));
+                }
+              })
+              .catch(() => console.error('что-то пошло не так'));
+        });
+
+        // // написанный нами fetch универсальная функция, которая принимает какой-то url 
+        // function fetch(url) {
+        //   return new Promise((resolve, reject) => {
+        //     const xhr = new XMLHttpRequest();
+        //     xhr.open('GET', url);
+        //     // здесь указываем через метод responseType что будем работать с файлами типа JSON 
+        //     xhr.responseType = 'json';
+        //     xhr.send();
+        //     xhr.addEventListener('load', () => {
+        //         if (xhr.status >= 400) {
+        //             reject();
+        //         } else {
+        //             // Promise также обладает таким свойством, что параметр который мы ему передаем может быть использован обработчиком then в параметр value. В нашем случае на строке 39
+        //             resolve(xhr.response);
+        //         }
+        //     });
+        //     xhr.addEventListener('error', () => reject);
+        //     xhr.addEventListener('abort', () => reject);
+        //   })
+        // };
+
+        function createFriendNode(friend) {
+            const div = document.createElement ('div');
+
+            div.classList.add('friend');
+            div.textContent = `${friend.name} ${friend.lastName}`;
+
+            return div;
+        }
+    </script>
+</body>
+</html>
