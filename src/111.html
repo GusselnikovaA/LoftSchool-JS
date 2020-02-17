@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        //     let where = document.createElement('div');
+        //             let class1 = `class-1`;
+        //             let class2 = `class-2`;
+        //             let text1 = 'text 1';
+        //             let text2 = 'text 2';
+        //             let stat = {
+        //                 tags: { P: 1, B: 2 },
+        //                 classes: { [class1]: 2, [class2]: 1 },
+        //                 texts: 3
+        //             };
+        //             let result;
+        
+        //             where.innerHTML = `<p class="${class1}"><b>${text1}</b> <b class="${class1} ${class2}">${text2}</b></p>`;
+        //             result = collectDOMStat(where);
+        
+        // function collectDOMStat(root, statistics) {
+        //     if ( typeof statistics === 'undefined' ) {
+        //         var statistics = {
+        //             tags: {},
+        //             classes: {},
+        //             texts: 0
+        //         }; // создаем объект co свойствами
+        //     } 
+        
+        //     for (let node of root.childNodes) { // цикл для всех узлов DOM root
+        //         if (node.nodeType === 1) {     
+        //             // let child = node; 
+        
+        //             while (node) {
+        //                 if (node.nodeType === 1) { // если тип узла элемент   
+        //                     let tagName = node.tagName;
+        
+        //                     if (statistics.tags.hasOwnProperty(tagName) == false) { // проверяет есть ли свойство у объекта с именем этого элемента
+        //                         statistics.tags[tagName] = 1; // если нет, создает такое свойство со значением 1
+        //                     } else {
+        //                         statistics.tags[tagName] += 1; // если есть, увеличивает значение этого свойства на 1
+        //                     }
+        
+        //                     if (node.hasAttribute('class')) { // проверяем есть ли у узла элемента атрибут class
+        //                         let className = node.getAttribute('class'); // присваиваем переменной className значение атрибута class
+        
+        //                         if (className.includes(' ')) {
+        //                             let classArray = className.split(' ');
+        
+        //                             for (let i = 0; i < classArray.length; i++) {
+        //                                 className = classArray[i];
+        //                                 if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
+        //                                     statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
+        //                                 } else {
+        //                                     statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
+        //                                 }
+        //                             }
+        //                         } else if (statistics.classes.hasOwnProperty(className) == false) { // проверяет есть ли свойство у объекта с именем этого класса 
+        //                             statistics.classes[className] = 1; // если нет, создает такое свойство со значением 1
+        //                         } else {
+        //                             statistics.classes[className] += 1; // если есть, увеличивает значение этого свойства на 1
+        //                         }
+        //                     }
+        //                     if (node.childNodes !== null) {
+        //                         collectDOMStat(node, statistics);
+        //                     }
+        //                 } else if (node.nodeType === 3) { // если тип узла текстовый
+        //                     statistics.texts += 1; // значение свойства texts должно увеличиваться на 1
+        //                 }
+        //                 if (node !== root.lastChild) {
+        //                     node = node.nextSibling;
+        //                 }
+        //                 else {
+        //                     return statistics;
+        //                 }
+        //             }
+        //         } else if (node.nodeType === 3) {
+        //             statistics.texts += 1;
+        //         }
+        //     }
+        //     console.log(statistics)
+        //     return statistics;
+        // }
+        
+let where = document.createElement('div');
+let fn = info => {
+    assert.isObject(info, 'info должен быть объектом');
+    assert.equal(info.type, targetInfo.type, `info.type должен быть равен ${targetInfo.type}`);
+    assert.isTrue(Array.isArray(info.nodes), 'info.nodes должен быть массивом');
+    assert.equal(info.nodes.length, targetInfo.nodes.length, 'некорректный размер info.nodes');
+    assert.deepEqual(targetInfo.nodes, info.nodes);
+    done();
+};
+let elementToInsert = document.createElement('div');
+let targetInfo = {
+    type: 'insert',
+    nodes: [elementToInsert]
+};
+document.body.appendChild(where);
+
+function observeChildNodes(where, fn) {
+    // создаем объект со свойствами type и nodes
+    const obj = {
+        type: '',
+        nodes: []
+    }
+    // создаём наблюдатель за изменениями
+    var observer = new MutationObserver(fn => {
+        console.log(fn);
+    });
+
+    // прикрепляем его к DOM-узлу where
+    observer.observe(where, { 
+        childList: true, 
+        subtree: true 
+    });
+    
+}
+
+    observeChildNodes(where, fn);
+    where.appendChild(elementToInsert);
+
+    document.body.removeChild(where);
+
+    // var observer = new MutationObserver(fn => {
+    //     console.log(fn);
+    // });
+
+
+</script>
+</body>
+</html>
+
