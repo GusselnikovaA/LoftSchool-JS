@@ -368,19 +368,30 @@ function observeChildNodes(where, fn) {
         // MutationRecord - массив??? изменений, которые отследил наблюдатель и для каждого такого изменения запускаем функцию
         // mutation это объект каждого изменения, которое отловил наблюдатель
         MutationRecord.forEach(function(mutation) {
+            let insertNodes = [];
+            let removeNodes = [];
+
+            for (const item of mutation.addedNodes) {
+                insertNodes.push(item);
+            }
+
+            for (const item of mutation.removeNodes) {
+                removeNodes.push(item);
+            }
+
             // если длина свойства addNodes текущего изменения больше 0. N.t. был добавлен какой-то элемент
-            if (mutation.addedNodes.length > 0) {
+            if (insertNodes.length > 0) {
                 obj.type = 'insert';
-                obj.nodes = mutation.addedNodes;
+                obj.nodes = insertNodes;
+                fn(obj);
             }
 
             // если длина свойства removeNodes текущего изменения больше 0. N.t. был удален какой-то элемент
-            if (mutation.removeNodes.length > 0) {
+            if (removeNodes.length > 0) {
                 obj.type = 'remove';
-                obj.nodes = mutation.removeNodes;
+                obj.nodes = removeNodes;
+                fn(obj);
             }
-
-            fn(obj);
         });    
     });
 
