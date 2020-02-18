@@ -55,7 +55,6 @@ function loadTowns() {
                 if (a.name < b.name) {
                     return -1;
                 }
-                // a должно быть равным b
 
                 return 0;
             });
@@ -76,6 +75,14 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
+    full = full.toLowerCase();
+    chunk = chunk.toLowerCase();
+
+    if (full.indexOf(chunk) >= 0) {
+        return true
+    } else {
+        return false
+    }
 }
 
 /* Блок с надписью "Загрузка" */
