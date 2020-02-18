@@ -37,6 +37,31 @@ const homeworkContainer = document.querySelector('#homework-container');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
+    let promise = fetch ('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+        .then(response => {
+            if (response.status >= 400) {
+                return Promise.reject();
+            }
+
+            return response.json();
+        })
+        .then(towns => {
+            console.log(towns[0]);
+
+            return towns.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                // a должно быть равным b
+
+                return 0;
+            });
+        });
+
+    return promise;
 }
 
 /*
