@@ -46,8 +46,6 @@ function loadTowns() {
             return response.json();
         })
         .then(towns => {
-            console.log(towns[0]);
-
             return towns.sort(function (a, b) {
                 if (a.name > b.name) {
                     return 1;
@@ -94,8 +92,28 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
+loadingBlock.style.cssText = "display: none";
+filterBlock.style.cssText = "display: block";
+
 filterInput.addEventListener('keyup', function() {
-    // это обработчик нажатия кливиш в текстовом поле
+    loadingBlock.style.cssText = "display: block";
+    filterResult.innerHTML = '';
+    loadTowns()
+        .then(towns => {
+            for (const town of towns) {
+                if (isMatching(town.name, filterInput.value) === true) {
+                    const div = document.createElement ('div');
+
+                    div.textContent = `${town.name}`;
+                    filterResult.appendChild(div);
+                    loadingBlock.style.cssText = "display: none";
+                } 
+
+                if (filterInput.value === '') {
+                    filterResult.innerHTML = ''
+                }
+            }
+        })
 });
 
 export {
