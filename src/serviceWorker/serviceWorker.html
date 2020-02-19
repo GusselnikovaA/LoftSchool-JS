@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if ('serviceWorker' in navigator) {
+            // устанавливаем SW в браузер
+            navigator.serviceWorker.register('service-worker.js')
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body class="container">
+    <div class="jumbotron">
+        <h1>Привет!</h1>
+        <p>Эта страница может работать в offline режиме</p>
+    </div>
+</body>
+</html>
