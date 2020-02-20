@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body class="container text-center">
+    <div>
+        Имя:<br>
+        <input type="text" id="name">
+    </div>
+    <div>
+        Значение:<br>
+        <input type="text" id="value">
+    </div>
+    <div>
+        Путь:<br>
+        <input type="text" id="path">
+    </div>
+    <div>
+        <button id="add">Добавить</button>
+    </div>
+
+    <script>
+        const cookieName = document.querySelector('#name');
+        const cookieValue = document.querySelector('#value');
+        const add = document.querySelector('#add');
+
+        add.addEventListener('click', function() {
+            // чтобы создать куки в JS надо написать свойство document.cookie = 
+            document.cookie = `${cookieName.value}=${cookieValue.value}`;
+
+            cookieName.value = '';
+            cookieValue.value = '';
+        });
+    </script>
+  
+</body>
+</html>
