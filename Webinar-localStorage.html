@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>localStorage</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="container text-center">
+    <div>
+        ФИО:<br>
+        <input type="text" id="myName">
+    </div>
+    <div>
+        Дата рождения:<br>
+        <input type="text" id="bday">
+    </div>
+    <div>
+        О себе:<br>
+        <textarea id="about"></textarea>
+    </div>
+    <div>
+        <label><input type="checkbox" id="isSessionStorage"> Использовать session storage</label>
+    </div>
+    <div>
+        <button id="save">Сохранить</button>
+        <button id="load">Загрузить</button>
+    </div>
+
+    <script>
+        const myName = document.querySelector('#myName');
+        const bday = document.querySelector('#bday');
+        const about = document.querySelector('#about');
+        const save = document.querySelector('#save');
+        const load = document.querySelector('#load');
+        const isSessionStorage = document.querySelector('#isSessionStorage');
+
+        // localStorage это глобальный объект
+        let storage = localStorage;
+
+        // при клике на кнопку сохранить
+        save.addEventListener('click', function() {
+            // мы создаем объект со свойствами из введеных в поля значений
+            // преобразуем этот объект в строку через JSON.stringify
+            // сохраняем это значение в данные localStorage
+            try {
+                storage.data = JSON.stringify({
+                    myName: myName.value,
+                    bday: bday.value,
+                    about: about.value
+                });
+            } catch (e) {
+                console.error('Не удалось сохранить данные');
+            }
+        });
+
+        // при клике на кнопку загрузить
+        load.addEventListener('click', function() {
+            // преобразуем данные из localStorage в объект через JSON.parse
+            // если там ничего нет, то пустое значение подменяем строкой с "пустым объектом" '{}'
+            // сохраняем этот объект в переменную data
+            const data = JSON.parse(storage.data || '{}');
+            // присваиваем значениям текстовых полей соответствующие свойства нашего объекта data
+            // если значение этого свойсьва не задано, то присваиваем пустую строку ''
+            myName.value = data.myName || '';
+            bday.value = data.bday || '';
+            about.value = data.about || '';
+        });
+
+        isSessionStorage.addEventListener('change', function(e) {
+            // проверяем установлена ли галочке в чекбокс, если да, то storage = sessionStorage, если нет, то storage = localStorage
+            storage = isSessionStorage.checked ? sessionStorage : localStorage;
+        });
+
+        // повесили обработчик событий окна (window) на событие storage
+        // каждый раз, когда какая-то из соседний вкладок будет менять содержимое localStorage, будет срабатывать событие storage
+        window.addEventListener('storage', function(event) {
+            load.click();
+            console.log(event);
+        })
+    </script>
+    
+</body>
+</html>

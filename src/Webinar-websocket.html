@@ -3,9 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>webSocket</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
+<body class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Сообщения</h3>
+        </div>
+        <ul class="list-group" id="massageContainer"></ul>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="messageText" placeholder="Введите сообщение...">
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default" id="sendButton">Отправить</button>
+        </div>
+    </div>
     
+
+    <script>
+        const socket = new Websocket("ws://localhost:8080");
+        const messageText = document.querySelector('#messageText');
+        const sendButton = document.querySelector('#sendButton');
+        const messageContainer = document.querySelector('#messageContainer');
+
+        socket.addEventListener('message', function(event) {
+            addMessage(event.data);
+        });
+
+        socket.addEventListener('error', function() {
+            alert('Соединение закрыто или не может быть открыто');
+        });
+
+        function addMessage(message) {
+            const messageItem = document.createElement('li');
+
+            messageItem.className = 'list-group-item';
+            messageItem.textContent = message;
+
+            messageContainer.appendChild(messageItem);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            socket.send(messageText.value);
+            messageText.value = '';
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        // отправка по смене фокуса с текстового поля
+        messageText.addEventListener('change', sendMessage);
+    </script>
 </body>
 </html>
