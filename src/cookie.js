@@ -43,6 +43,10 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+// function oldCookie () {
+
+// };
+
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
 });
@@ -58,7 +62,7 @@ addButton.addEventListener('click', () => {
 
     // функция создает кнопку удалить
     // по клику удаляется cookie из браузера
-    deleteCookie(nameInput);
+    // deleteCookie(nameInput);
 
     cookieInTable(nameInput, valueInput);
 
@@ -91,7 +95,7 @@ function setCookie (name, value, options = {}) {
 }
 
 // надо добавить удаление из таблицы по клику
-function deleteCookie(name) {
+function deleteCookie(name, target) {
     // создаем кнопку с надписью удалить
     const deleteButton = document.createElement('button');
 
@@ -104,18 +108,31 @@ function deleteCookie(name) {
             'max-age': -1
         });
         // должна удалять строку из таблицы
-        listTable.deleteRow();
+        listTable.deleteRow(target);
     });
+    
+    return deleteButton;
 }
+
+// function objCookie() {
+//     // преобразуем новую cookie в объект cookies
+//     var cookies = document.cookie.split('; ').reduce((prev, current) => {
+//         const [name, value] = current.split('=');
+  
+//         prev[name] = value;
+  
+//         return prev;
+//     }, {});
+// }
 
 // функцию по добавлению значений cookie в таблицу
 function cookieInTable(name, value) {
     // преобразуем новую cookie в объект cookies
     var cookies = document.cookie.split('; ').reduce((prev, current) => {
         const [name, value] = current.split('=');
-  
+
         prev[name] = value;
-  
+
         return prev;
     }, {});
 
@@ -139,8 +156,8 @@ function cookieInTable(name, value) {
             const cellContent = document.createTextNode(cookiesValue);
 
             newCell.appendChild(cellContent);
-        } else if (i === 3) {
-            const cellContent = deleteButton;
+        } else if (i === 2) {
+            const cellContent = deleteCookie(name);
 
             newCell.appendChild(cellContent);
         }
