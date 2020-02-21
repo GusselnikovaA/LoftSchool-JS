@@ -48,14 +48,68 @@ filterNameInput.addEventListener('keyup', function() {
 });
 
 addButton.addEventListener('click', () => {
-    // условие, проверяющее если уже есть cookie с таким именем, то его значение переписывается
-    if (cookiesName === `${addNameInput.value}`) {
-        cookiesValue = `${addValueInput.value}`
-    } else {
-        // создаем новую cookie и добавляем ее в браузер
-        document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    // создаем переменный с введенными знаечениями в поля имени и значения cookie
+    let nameInput = `${addNameInput.value}`;
+    let valueInput = `${addValueInput.value}`;
+
+    // при каждом нажатии на кнопку добавить мы запускаем функцию по созданию куки
+    // в параметры ей передаем имя и значение куки введенной в поле
+    setCookie(nameInput, valueInput, {});
+
+    // функция создает кнопку удалить
+    // по клику удаляется cookie из браузера
+    deleteCookie(nameInput);
+
+    cookieInTable(nameInput, valueInput);
+
+    addNameInput.value = '';
+    addValueInput.value = '';
+});
+
+// функция, которая добавляет куки в браузер по имени и значению
+function setCookie (name, value, options = {}) {
+    options = {
+        path: '/',
+        // при необходимости добавьте другие значения по умолчанию
+    };
+
+    if (options.expires instanceof Date) {
+        options.expires = options.expires.toUTCString();
     }
 
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+    for (let optionKey in options) {
+        updatedCookie += "; " + optionKey;
+        let optionValue = options[optionKey];
+        if (optionValue !== true) {
+            updatedCookie += "=" + optionValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+
+// надо добавить удаление из таблицы по клику
+function deleteCookie(name) {
+    // создаем кнопку с надписью удалить
+    const deleteButton = document.createElement('button');
+
+    deleteButton.textContent = 'Удалить';
+    // обработчик нажатия на кнопку удалить
+    deleteButton.addEventListener('click', () => {
+        // удаляем cookie из браузера 
+        // вызов функции с отрицательным сроком жизни cookie
+        setCookie(name, '', {
+            'max-age': -1
+        });
+        // должна удалять строку из таблицы
+        listTable.deleteRow();
+    });
+}
+
+// функцию по добавлению значений cookie в таблицу
+function cookieInTable(name, value) {
     // преобразуем новую cookie в объект cookies
     var cookies = document.cookie.split('; ').reduce((prev, current) => {
         const [name, value] = current.split('=');
@@ -65,23 +119,30 @@ addButton.addEventListener('click', () => {
         return prev;
     }, {});
 
+    // создаем 2 переменные со свойством имени и значения объекта cookie
     let cookiesName = cookies[`${addNameInput.value}`];
     let cookiesValue = cookies[`${addValueInput.value}`];
 
-    let newRow = listTable.insertRow();
-    let firstCell = newRow.insertCell(0);
-    let secondCell = newRow.insertCell(1);
-    let thirdCell = newRow.insertCell(2);
-    let firstText = document.createTextNode(cookiesName);
-    let secondText = document.createTextNode(cookiesValue);
-    let removeButton = document.createElement('button');
+    // создаем строку в таблице
+    const newRow = listTable.insertRow();
 
-    removeButton.value = 'удалить';
-    
-    firstCell.appendChild(firstText);
-    secondCell.appendChild(secondText);
-    thirdCell.appendChild(removeButton);
+    // на каждой итерации от 0 до 2
+    // создаем новую колонку в только что созданной строке
+    for (let i = 0; i <=2; i++) {
+        const newCell = newRow.insertCell(i);
 
-    addNameInput.value = '';
-    addValueInput.value = '';
-});
+        if (i === 0) {
+            const cellContent = document.createTextNode(cookiesName);
+
+            newCell.appendChild(cellContent);
+        } else if (i === 1) {
+            const cellContent = document.createTextNode(cookiesValue);
+
+            newCell.appendChild(cellContent);
+        } else if (i === 3) {
+            const cellContent = deleteButton;
+
+            newCell.appendChild(cellContent);
+        }
+    }
+}
