@@ -48,5 +48,40 @@ filterNameInput.addEventListener('keyup', function() {
 });
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
+    // условие, проверяющее если уже есть cookie с таким именем, то его значение переписывается
+    if (cookiesName === `${addNameInput.value}`) {
+        cookiesValue = `${addValueInput.value}`
+    } else {
+        // создаем новую cookie и добавляем ее в браузер
+        document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    }
+
+    // преобразуем новую cookie в объект cookies
+    var cookies = document.cookie.split('; ').reduce((prev, current) => {
+        const [name, value] = current.split('=');
+  
+        prev[name] = value;
+  
+        return prev;
+    }, {});
+
+    let cookiesName = cookies[`${addNameInput.value}`];
+    let cookiesValue = cookies[`${addValueInput.value}`];
+
+    let newRow = listTable.insertRow();
+    let firstCell = newRow.insertCell(0);
+    let secondCell = newRow.insertCell(1);
+    let thirdCell = newRow.insertCell(2);
+    let firstText = document.createTextNode(cookiesName);
+    let secondText = document.createTextNode(cookiesValue);
+    let removeButton = document.createElement('button');
+
+    removeButton.value = 'удалить';
+    
+    firstCell.appendChild(firstText);
+    secondCell.appendChild(secondText);
+    thirdCell.appendChild(removeButton);
+
+    addNameInput.value = '';
+    addValueInput.value = '';
 });
