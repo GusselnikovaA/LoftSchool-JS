@@ -68,6 +68,8 @@ function setCookie(name, value) {
 }
 
 filterNameInput.addEventListener('keyup', function() {
+    let cookies = objCookie();
+    
     createTable(cookies);
 });
 
@@ -107,7 +109,6 @@ function createTable (cookies) {
     listTable.innerHTML = '';
 
     for (const key in cookies) {
-
         if (filterNameInput.value) {
             if (isMatching(key, filterNameInput.value) || isMatching(cookies[key], filterNameInput.value)) {
                 cookieInTable(key, cookies[key]);
