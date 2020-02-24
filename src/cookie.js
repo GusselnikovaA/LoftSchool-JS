@@ -43,13 +43,10 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-// вызываем функцию при первой загрузке
-cookieInTable();
-
-// функция преобразующая cookie в объект
-function objCookie() {
+// функция преобразующая cookie в объект, возвращает объект cookies
+function objCookie () {
     // преобразуем новую cookie в объект cookies
-    var cookies = document.cookie.split('; ').reduce((prev, current) => {
+    const cookies = document.cookie.split('; ').reduce((prev, current) => {
         const [name, value] = current.split('=');
 
         prev[name] = value;
@@ -60,33 +57,18 @@ function objCookie() {
     return cookies;
 }
 
-// функция по созданию куки в браузере и таблице
+const cookies = objCookie();
+
+// вызываем функцию при первой загрузке
+createTable(cookies);
+
+// функция по созданию куки в браузере
 function setCookie(name, value) {
-    document.cookie = name + '=' + value;
-}
-
-// функция по удалению куки из браузера и таблицы
-function deleteCookie(name) {
-    // создаем кнопку с надписью удалить
-    const deleteButton = document.createElement('button');
-
-    deleteButton.textContent = 'Удалить';
-    // обработчик нажатия на кнопку удалить
-    deleteButton.addEventListener('click', (e) => {
-        // удаляем cookie из браузера 
-        let date = new Date(); // Берём текущую дату
-      
-        date.setTime(date.getTime() - 1); // Возвращаемся в "прошлое"
-        document.cookie = name += '=; expires=' + date.toGMTString();
-        // удаляем строку из таблицы
-        listTable.deleteRow(e.target);
-    });
-
-    return deleteButton;
+    return document.cookie = name + '=' + value;
 }
 
 filterNameInput.addEventListener('keyup', function() {
-
+    createTable(cookies);
 });
 
 addButton.addEventListener('click', () => {
@@ -94,42 +76,65 @@ addButton.addEventListener('click', () => {
     const valueInput = `${addValueInput.value}`;
 
     setCookie(nameInput, valueInput);
-    cookieInTable(nameInput, valueInput);
+    let cookies = objCookie();
+
+    createTable(cookies);
 });
 
 // функцию по добавлению значений cookie в таблицу и удалению из нее
 function cookieInTable(name, value) {
-    // опустошаем нашу таблицу
+    const tr = document.createElement('tr');
+    const tdFirst = document.createElement('td');
+    const tdSecond = document.createElement('td');
+    const tdThird = document.createElement('td');
+    const deleteButton = document.createElement('button');
+
+    tdFirst.textContent = name;
+    tdSecond.textContent = value;
+    deleteButton.textContent = 'Удалить';
+    tdThird.appendChild(deleteButton);
+    deleteButton.addEventListener('click', (e) => {
+        deleteCookie(e.target)
+    })
+    tr.appendChild(tdFirst);
+    tr.appendChild(tdSecond);
+    tr.appendChild(tdThird);
+    listTable.appendChild(tr);
+} 
+
+// функцию по созданию таблицы с условием фильтрации
+function createTable (cookies) {
     listTable.innerHTML = '';
-    // преобразуем новую cookie в объект cookies
-    let cookies = objCookie(name, value);
-        
-    for (let key in cookies) {
-        // создаем 2 переменные со свойством имени и значения объекта cookie
-        let cookiesName = key;
-        let cookiesValue = cookies[key];
 
-        // создаем строку в таблице
-        const newRow = listTable.insertRow();
+    for (const key in cookies) {
 
-        // на каждой итерации от 0 до 2
-        // создаем новую колонку в только что созданной строке
-        for (let i = 0; i <=2; i++) {
-            const newCell = newRow.insertCell(i);
-
-            if (i === 0) {
-                const cellContent = document.createTextNode(cookiesName);
-
-                newCell.appendChild(cellContent);
-            } else if (i === 1) {
-                const cellContent = document.createTextNode(cookiesValue);
-
-                newCell.appendChild(cellContent);
-            } else if (i === 2) {
-                const cellContent = deleteCookie(name);
-
-                newCell.appendChild(cellContent);
+        if (filterNameInput.value) {
+            if (isMatching(key, filterNameInput.value) || isMatching(cookies[key], filterNameInput.value)) {
+                cookieInTable(key, cookies[key]);
             }
+        } else {
+            cookieInTable(key, cookies[key]);
         }
     }
+}
+
+function isMatching(full, chunk) {
+    full = full.toLowerCase();
+    chunk = chunk.toLowerCase();
+
+    if (full.indexOf(chunk) >= 0) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// функция по удалению куки из браузера и таблицы
+function deleteCookie() {
+    const tr = event.target.closest('tr');
+    const tdName = tr.querySelector('td:first-child').textContent;
+    const tdValue = tr.querySelector('td:nth-child(2)').textContent;
+
+    tr.parentElement.removeChild(tr);
+    document.cookie = tdName + '=' + tdValue +';expires=\'Thu, 01 Jan 1970 00:00:01 GMT\'';
 }
