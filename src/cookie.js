@@ -60,7 +60,9 @@ function objCookie () {
 const cookies = objCookie();
 
 // вызываем функцию при первой загрузке
-createTable(cookies);
+if (document.cookie.length > 0) {
+    createTable(cookies);
+}
 
 // функция по созданию куки в браузере
 function setCookie(name, value) {
@@ -69,7 +71,7 @@ function setCookie(name, value) {
 
 filterNameInput.addEventListener('keyup', function() {
     let cookies = objCookie();
-    
+
     createTable(cookies);
 });
 
